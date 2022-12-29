@@ -1,21 +1,6 @@
-import subprocess
-import platform
-import math
-import json
-import sys
-import os
-import re
-from pathlib import Path
-
 import gradio as gr
-import numpy as np
-from tqdm import tqdm
-from PIL import Image, ImageFilter
-import cv2
 
-from modules.ui import create_refresh_button, folder_symbol
-from modules.shared import opts, OptionInfo
-from modules import shared, paths, script_callbacks
+from modules import script_callbacks
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 
 
@@ -69,25 +54,18 @@ def on_ui_tabs():
                 print("Generation complete!")
                 tempString = ""
                 for i in range(len(output)):
-                    tempString += tokenizer.decode(output[i], skip_special_tokens=True) + "\n"
+                    tempString += tokenizer.decode(
+                        output[i], skip_special_tokens=True) + "\n"
                 return tempString
             except Exception as e:
-                print(f"Exception encountered while attempting to generate prompt: {e}")
+                print(
+                    f"Exception encountered while attempting to generate prompt: {e}")
                 return gr.update(), f"Error: {e}"
         generateButton.click(fn=generate_longer_prompt, inputs=[
-                             promptTxt,temp_slider , top_k_slider, max_length_slider, 
-                             repetition_penalty_slider, num_return_sequences_slider], 
+                             promptTxt, temp_slider, top_k_slider, max_length_slider,
+                             repetition_penalty_slider, num_return_sequences_slider],
                              outputs=[Results])
     return (prompt_generator, "Prompt Generator", "Prompt Generator"),
 
-# def on_ui_settings():
-#     picker_path = Path(paths.script_path) / "training-picker"
-#     section = ('training-picker', "Training Picker")
-#     opts.add_option("training_picker_fixed_size", OptionInfo(512, "Fixed size to resize images to", section=section))
-#     opts.add_option("training_picker_videos_path", OptionInfo(str(picker_path / "videos"), "Path to read videos from", section=section))
-#     opts.add_option("training_picker_framesets_path", OptionInfo(str(picker_path / "extracted-frames"), "Path to store extracted frame sets in", section=section))
-#     opts.add_option("training_picker_default_output_path", OptionInfo(str(picker_path / "cropped-frames"), "Default cropped image output directory", section=section))
 
-
-# script_callbacks.on_ui_settings(on_ui_settings)
 script_callbacks.on_ui_tabs(on_ui_tabs)
