@@ -31,7 +31,7 @@ def on_ui_tabs():
                 generateButton = gr.Button(
                     value="Generate", elem_id="generate_button")
         with gr.Column():
-            Results = gr.Text(elem_id="Results_textBox", interactive=False)
+            Results = gr.Text(label="Results", elem_id="Results_textBox", interactive=False)
 
         # events
         def generate_longer_prompt(prompt, temperature, top_k,
