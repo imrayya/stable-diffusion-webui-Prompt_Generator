@@ -1,13 +1,20 @@
 import gradio as gr
-
+import modules
 from modules import script_callbacks
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 
+first_gen = ""
+
+def add_to_prompt():
+    return first_gen
 
 def on_ui_tabs():
-    with gr.Blocks(analytics_enabled=False) as prompt_generator:
+    # structure
 
-        # structure
+    txt2img_prompt = modules.ui.txt2img_paste_fields[0][0]
+    img2img_prompt = modules.ui.img2img_paste_fields[0][0]
+
+    with gr.Blocks(analytics_enabled=False) as prompt_generator:
         with gr.Column():
             with gr.Row():
                 promptTxt = gr.Textbox(
@@ -30,9 +37,15 @@ def on_ui_tabs():
             with gr.Row():
                 generateButton = gr.Button(
                     value="Generate", elem_id="generate_button")
+        with gr.Column(visible=False) as results_col:
+            results = gr.Text(label="Results", elem_id="Results_textBox", interactive=False)
         with gr.Column():
-            Results = gr.Text(label="Results", elem_id="Results_textBox", interactive=False)
-
+            warning = gr.HTML(value="Send the first generated prompt to:", visible=False)
+            with gr.Row():
+                send_to_txt2img = gr.Button('Send to txt2img', visible=False)
+                send_to_img2img = gr.Button('Send to img2img', visible=False)
+        
+        
         # events
         def generate_longer_prompt(prompt, temperature, top_k,
                                    max_length, repetition_penalty, num_return_sequences):
@@ -53,10 +66,21 @@ def on_ui_tabs():
                                         penalty_alpha=0.6, no_repeat_ngram_size=1, early_stopping=True)
                 print("Generation complete!")
                 tempString = ""
+
                 for i in range(len(output)):
+                    
                     tempString += tokenizer.decode(
                         output[i], skip_special_tokens=True) + "\n"
-                return tempString
+                    if(i==0):
+                        global first_gen
+                        first_gen = tempString
+                
+                return {results: tempString,
+                        send_to_img2img: gr.update(visible = True),
+                        send_to_txt2img: gr.update(visible = True),
+                        results_col: gr.update(visible=True),
+                        warning: gr.update(visible=True)
+                }
             except Exception as e:
                 print(
                     f"Exception encountered while attempting to generate prompt: {e}")
@@ -64,7 +88,11 @@ def on_ui_tabs():
         generateButton.click(fn=generate_longer_prompt, inputs=[
                              promptTxt, temp_slider, top_k_slider, max_length_slider,
                              repetition_penalty_slider, num_return_sequences_slider],
-                             outputs=[Results])
+                             outputs=[results, send_to_img2img, send_to_txt2img, results_col, warning])
+        send_to_img2img.click(add_to_prompt, outputs=[img2img_prompt])
+        send_to_txt2img.click(add_to_prompt, outputs=[txt2img_prompt])
+        send_to_txt2img.click(None, _js='switch_to_txt2img', inputs=None, outputs=None)
+        send_to_img2img.click(None, _js="switch_to_img2img", inputs=None, outputs=None)
     return (prompt_generator, "Prompt Generator", "Prompt Generator"),
 
 
