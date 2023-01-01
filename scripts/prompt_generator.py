@@ -32,7 +32,7 @@ def on_ui_tabs():
                 repetition_penalty_slider = gr.Slider(
                     elem_id="repetition_penalty_slider", label="Repetition Penalty", value=1.2, minimum=0, maximum=10, interactive=True)
                 num_return_sequences_slider = gr.Slider(
-                    elem_id="num_return_sequences_slider", label="How Many To Generate", value=5, minimum=1, maximum=20, interactive=True)
+                    elem_id="num_return_sequences_slider", label="How Many To Generate", value=5, minimum=1, maximum=20, interactive=True, step=1)
         with gr.Column():
             with gr.Row():
                 generateButton = gr.Button(
