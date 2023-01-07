@@ -15,7 +15,7 @@ Adds a tab to the webui that allows the user to generate a prompt from a small b
 1. Write in the prompt in the *Start of the prompt* text box
 2. Click Generate and wait
 
-## Prompt Explanation 
+## Parameters Explanation 
 - **Start of the prompt**: As the name, the start of the prompt that the generator should start with
 - **Temperature**: A higher temperature will produce more diverse results, but with a higher risk of less coherent text
 - **Top K**: The number of tokens to sample from at each step
