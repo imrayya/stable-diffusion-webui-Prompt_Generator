@@ -22,3 +22,4 @@ Adds a tab to the webui that allows the user to generate a prompt from a small b
 - **Max Length**: the maximum number of tokens for the output of the model
 - **Repetition Penalty**: The penalty value for each repetition of a token
 - **How Many To Generate**: The number of results to generate
+- **Use blacklist?** Using `.\extensions\stable-diffusion-webui-Prompt_Generator\blacklist.txt`. It will delete any matches to the generated result (case insensitive). *Be aware that it simply deletes it and doesn't generate more to make up for the lost words*
