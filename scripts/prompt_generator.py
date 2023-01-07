@@ -11,7 +11,7 @@ def add_to_prompt():
 
 def get_list_blacklist():
     # Set the directory you want to start from
-    file_path = './extensions/prompt-maker/blacklist.txt'
+    file_path = './extensions/stable-diffusion-webui-Prompt_Generator/blacklist.txt'
     things_to_black_list = []
     with open(file_path, 'r') as f:
         # Read each line in the file and append it to the list
@@ -31,7 +31,7 @@ def on_ui_tabs():
         with gr.Column():
             with gr.Row():
                 promptTxt = gr.Textbox(
-                    lines=2, elem_id="promptTxt", label="Start of the prompt", tooltip="Hello?")
+                    lines=2, elem_id="promptTxt", label="Start of the prompt")
         with gr.Column():
             with gr.Row():
                 temp_slider = gr.Slider(
@@ -49,7 +49,7 @@ def on_ui_tabs():
         with gr.Column():
             with gr.Row():
                 use_blacklist_checkbox = gr.Checkbox(label="Use blacklist?")
-                gr.HTML(value="<center>Using <code>\".\extensions\prompt-maker\\blacklist.txt</code>\".<br>It will delete any matches to the generated result (case insensitive).</center>")
+                gr.HTML(value="<center>Using <code>\".\extensions\stable-diffusion-webui-Prompt_Generator\\blacklist.txt</code>\".<br>It will delete any matches to the generated result (case insensitive).</center>")
         with gr.Column():
             with gr.Row():
                 generateButton = gr.Button(
