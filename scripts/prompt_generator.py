@@ -106,7 +106,7 @@ def on_ui_tabs():
                             tempString = re.sub(to_check, "", tempString, flags=re.IGNORECASE)
                     if(i==0):
                         global result_prompt
-                        result_prompt = tempString
+                        
                 result_prompt = tempString
                 print(result_prompt)
 
