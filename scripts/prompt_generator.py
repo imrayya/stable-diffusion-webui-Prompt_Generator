@@ -124,7 +124,7 @@ def on_ui_tabs():
         # events
         generateButton.click(fn=generate_longer_prompt, inputs=[
                              promptTxt, temp_slider, top_k_slider, max_length_slider,
-                             repetition_penalty_slider, num_return_sequences_slider, use_blacklist_checkbox],##変更点
+                             repetition_penalty_slider, num_return_sequences_slider, use_blacklist_checkbox],
                              outputs=[results, send_to_img2img, send_to_txt2img, results_col, warning])
         send_to_img2img.click(add_to_prompt,inputs=[promptNum], outputs=[img2img_prompt])
         send_to_txt2img.click(add_to_prompt,inputs=[promptNum], outputs=[txt2img_prompt])
