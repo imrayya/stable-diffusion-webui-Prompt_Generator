@@ -4,10 +4,17 @@ from modules import script_callbacks
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 import os, re
 
-first_gen = ""
+result_prompt = ""
 
-def add_to_prompt():
-    return first_gen
+def add_to_prompt(num):# A function that determines which prompt to pass
+    hand_over_prompt_list=result_prompt.splitlines()
+    try:
+        return(hand_over_prompt_list[int(num)-1][3:])
+    except Exception as e:
+                print(
+                    f"That line does not exist. Check number of prompts: {e}")
+                return gr.update(), f"Error: {e}"
+    
 
 def get_list_blacklist():
     # Set the directory you want to start from
@@ -57,6 +64,10 @@ def on_ui_tabs():
         with gr.Column(visible=False) as results_col:
             results = gr.Text(label="Results", elem_id="Results_textBox", interactive=False)
         with gr.Column():
+            with gr.Row():
+                promptNum = gr.Textbox(
+                    lines=1, elem_id="promptNum", label="Send which prompt")
+        with gr.Column():
             warning = gr.HTML(value="Send the first generated prompt to:", visible=False)
             with gr.Row():
                 send_to_txt2img = gr.Button('Send to txt2img', visible=False)
@@ -86,15 +97,18 @@ def on_ui_tabs():
                 if(use_blacklist):
                         blacklist = get_list_blacklist()
                 for i in range(len(output)):
-                    
-                    tempString += tokenizer.decode(
+
+                    tempString += str(i+1)+": "+tokenizer.decode(
                         output[i], skip_special_tokens=True) + "\n"
+                
                     if(use_blacklist):
                         for to_check in blacklist:
                             tempString = re.sub(to_check, "", tempString, flags=re.IGNORECASE)
                     if(i==0):
-                        global first_gen
-                        first_gen = tempString
+                        global result_prompt
+                        result_prompt = tempString
+                result_prompt = tempString
+                print(result_prompt)
 
                 return {results: tempString,
                         send_to_img2img: gr.update(visible = True),
@@ -110,10 +124,10 @@ def on_ui_tabs():
         # events
         generateButton.click(fn=generate_longer_prompt, inputs=[
                              promptTxt, temp_slider, top_k_slider, max_length_slider,
-                             repetition_penalty_slider, num_return_sequences_slider, use_blacklist_checkbox],
+                             repetition_penalty_slider, num_return_sequences_slider, use_blacklist_checkbox],##変更点
                              outputs=[results, send_to_img2img, send_to_txt2img, results_col, warning])
-        send_to_img2img.click(add_to_prompt, outputs=[img2img_prompt])
-        send_to_txt2img.click(add_to_prompt, outputs=[txt2img_prompt])
+        send_to_img2img.click(add_to_prompt,inputs=[promptNum], outputs=[img2img_prompt])
+        send_to_txt2img.click(add_to_prompt,inputs=[promptNum], outputs=[txt2img_prompt])
         send_to_txt2img.click(None, _js='switch_to_txt2img', inputs=None, outputs=None)
         send_to_img2img.click(None, _js="switch_to_img2img", inputs=None, outputs=None)
     return (prompt_generator, "Prompt Generator", "Prompt Generator"),
