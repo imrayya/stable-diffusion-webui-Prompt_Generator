@@ -63,12 +63,12 @@ def on_ui_tabs():
                     value="Generate", elem_id="generate_button")
         with gr.Column(visible=False) as results_col:
             results = gr.Text(label="Results", elem_id="Results_textBox", interactive=False)
-        with gr.Column():
+        with gr.Column(visible=False) as promptNum_col:
             with gr.Row():
                 promptNum = gr.Textbox(
                     lines=1, elem_id="promptNum", label="Send which prompt")
         with gr.Column():
-            warning = gr.HTML(value="Send the first generated prompt to:", visible=False)
+            warning = gr.HTML(value="Select one number and send that prompt to txt2img or img2img", visible=False)
             with gr.Row():
                 send_to_txt2img = gr.Button('Send to txt2img', visible=False)
                 send_to_img2img = gr.Button('Send to img2img', visible=False)
@@ -114,7 +114,8 @@ def on_ui_tabs():
                         send_to_img2img: gr.update(visible = True),
                         send_to_txt2img: gr.update(visible = True),
                         results_col: gr.update(visible=True),
-                        warning: gr.update(visible=True)
+                        warning: gr.update(visible=True),
+                        promptNum_col: gr.update(visible=True)
                 }
             except Exception as e:
                 print(
@@ -125,7 +126,7 @@ def on_ui_tabs():
         generateButton.click(fn=generate_longer_prompt, inputs=[
                              promptTxt, temp_slider, top_k_slider, max_length_slider,
                              repetition_penalty_slider, num_return_sequences_slider, use_blacklist_checkbox],##変更点
-                             outputs=[results, send_to_img2img, send_to_txt2img, results_col, warning])
+                             outputs=[results, send_to_img2img, send_to_txt2img, results_col, warning,promptNum_col])
         send_to_img2img.click(add_to_prompt,inputs=[promptNum], outputs=[img2img_prompt])
         send_to_txt2img.click(add_to_prompt,inputs=[promptNum], outputs=[txt2img_prompt])
         send_to_txt2img.click(None, _js='switch_to_txt2img', inputs=None, outputs=None)
