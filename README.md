@@ -2,7 +2,7 @@
 
 Adds a tab to the webui that allows the user to generate a prompt from a small base prompt. Based on [FredZhang7/distilgpt2-stable-diffusion-v2](https://huggingface.co/FredZhang7/distilgpt2-stable-diffusion-v2) and [Gustavosta/MagicPrompt-Stable-Diffusion](https://huggingface.co/Gustavosta/MagicPrompt-Stable-Diffusion). I did nothing apart from porting it to [AUTOMATIC1111 WebUI](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 
-![image](https://user-images.githubusercontent.com/8998556/209890919-203463fe-4b25-4ba0-9b29-57b1744dfd0f.png)
+![screenshot](https://user-images.githubusercontent.com/8998556/212550120-df38601b-6811-4470-9e37-6980fbd94369.png)
 
 
 ## Installation
@@ -31,11 +31,15 @@ There are two models provided:
 
 ### FredZhang7
 
-Made by [FredZhang7](https://huggingface.co/FredZhang7) under creativeml-openrail-m license. Useful to get styles for a prompt. Eg: "A cat sitting" -> "A cat sitting on a chair, digital art. The room is made of clay and metal with the sun shining through in front trending at Artstation 4k uhd..."
+Made by [FredZhang7](https://huggingface.co/FredZhang7) under creativeml-openrail-m license. 
+
+Useful to get styles for a prompt. Eg: "A cat sitting" -> "A cat sitting on a chair, digital art. The room is made of clay and metal with the sun shining through in front trending at Artstation 4k uhd..."
 
 ### MagicPrompt
 
-Made by [Gustavosta](https://huggingface.co/Gustavosta) under the MIT license. Useful to get more natural language prompts. Eg: "A cat sitting" -> "A cat sitting in a chair, wearing pair of sunglasses"
+Made by [Gustavosta](https://huggingface.co/Gustavosta) under the MIT license. 
+
+Useful to get more natural language prompts. Eg: "A cat sitting" -> "A cat sitting in a chair, wearing pair of sunglasses"
 
 *Be aware that sometimes the model fails to produce anything or less than the wanted amount, either try again or use a new prompt in that case*
 
