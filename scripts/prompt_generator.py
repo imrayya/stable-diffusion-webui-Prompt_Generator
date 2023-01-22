@@ -36,7 +36,7 @@ def get_list_blacklist():
     with open(file_path, 'r') as f:
         # Read each line in the file and append it to the list
         for line in f:
-            things_to_black_list.append(line)
+            things_to_black_list.append(line.rstrip())
 
     return things_to_black_list
 
