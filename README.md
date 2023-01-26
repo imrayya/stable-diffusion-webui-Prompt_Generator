@@ -15,6 +15,8 @@ Adds a tab to the webui that allows the user to generate a prompt from a small b
 1. Write in the prompt in the *Start of the prompt* text box
 2. Click Generate and wait
 
+The initial use of the model may take longer as it needs to be downloaded to your machine for offline use. The model will be used on your device and will be stored in the default location of `*username*/.cache/huggingface/hub/models`. The entire process of generating results will be done on your local machine and not require internet access.
+
 ## Parameters Explanation
 
 - **Start of the prompt**: As the name, the start of the prompt that the generator should start with
