@@ -168,6 +168,7 @@ def on_ui_tabs():
                     lines=2, elem_id="promptTxt", label="Start of the prompt")
         with gr.Column():
             with gr.Row():
+                #tooltip_slider = gr.tooltip("This is the tooltip text.")
                 temp_slider = gr.Slider(
                     elem_id="temp_slider", label="Temperature", interactive=True, minimum=0, maximum=1, value=0.9)
                 max_length_slider = gr.Slider(
