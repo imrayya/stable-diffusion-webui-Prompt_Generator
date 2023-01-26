@@ -19,7 +19,7 @@ The initial use of the model may take longer as it needs to be downloaded to you
 
 ## Parameters Explanation
 
-- **Start of the prompt**: As the name, the start of the prompt that the generator should start with
+- **Start of the prompt**: As the name suggests, the start of the prompt that the generator should start with
 - **Temperature**: A higher temperature will produce more diverse results, but with a higher risk of less coherent text
 - **Top K**: Strategy is to sample from a shortlist of the top K tokens. This approach allows the other high-scoring tokens a chance of being picked.
 - **Max Length**: the maximum number of tokens for the output of the model
