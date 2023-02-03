@@ -15,7 +15,7 @@ import modules
 from modules import script_callbacks
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 import re
-
+import math
 result_prompt = ""
 
 
@@ -43,14 +43,13 @@ def get_list_blacklist():
 
 def on_ui_tabs():
     # Method to create the extended prompt
-    
-    
+
     def generate_longer_prompt_gustavosta(prompt, temperature, top_k,
                                           max_length, repetition_penalty, num_return_sequences, use_blacklist=False, use_early_stop=True):
         try:
             tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
             tokenizer.add_special_tokens({'pad_token': '[PAD]'})
-            #Full credits for the model to Gustavosta (https://huggingface.co/Gustavosta). Under the MIT license
+            # Full credits for the model to Gustavosta (https://huggingface.co/Gustavosta). Under the MIT license
             model = GPT2LMHeadModel.from_pretrained(
                 'Gustavosta/MagicPrompt-Dalle')
         except Exception as e:
@@ -61,9 +60,9 @@ def on_ui_tabs():
             print(f"Generate new prompt from: \"{prompt}\"")
             input_ids = tokenizer(prompt, return_tensors='pt').input_ids
             output = model.generate(input_ids, do_sample=True, temperature=temperature,
-                                    top_k=top_k, max_length=max_length,
+                                    top_k=round(top_k), max_length=max_length,
                                     num_return_sequences=num_return_sequences*4,
-                                    repetition_penalty=repetition_penalty,
+                                    repetition_penalty=float(repetition_penalty),
                                     penalty_alpha=0.6, no_repeat_ngram_size=1,
                                     early_stopping=use_early_stop)
             print("Generation complete!")
@@ -74,8 +73,6 @@ def on_ui_tabs():
             for i in range(len(output)):
                 tempt_of_temp_String = tokenizer.decode(
                     output[i], skip_special_tokens=True)
-                # print(tempt_of_temp_String[:-1], j,
-                #       len(tempt_of_temp_String) > min + 4) # Debugger
                 if (len(tempt_of_temp_String) > min + 4):
                     tempString += str(j+1) + ": " + tempt_of_temp_String
                     j += 1
@@ -90,7 +87,6 @@ def on_ui_tabs():
 
             global result_prompt
             result_prompt = tempString
-            # print(result_prompt)
 
             return {results: tempString,
                     send_to_img2img: gr.update(visible=True),
@@ -110,7 +106,7 @@ def on_ui_tabs():
         try:
             tokenizer = GPT2Tokenizer.from_pretrained('distilgpt2')
             tokenizer.add_special_tokens({'pad_token': '[PAD]'})
-            #Full credits for the model to FredZhang7 (https://huggingface.co/FredZhang7). Under creativeml-openrail-m license.
+            # Full credits for the model to FredZhang7 (https://huggingface.co/FredZhang7). Under creativeml-openrail-m license.
             model = GPT2LMHeadModel.from_pretrained(
                 'FredZhang7/distilgpt2-stable-diffusion-v2')
         except Exception as e:
@@ -120,9 +116,9 @@ def on_ui_tabs():
             print(f"Generate new prompt from: \"{prompt}\"")
             input_ids = tokenizer(prompt, return_tensors='pt').input_ids
             output = model.generate(input_ids, do_sample=True, temperature=temperature,
-                                    top_k=top_k, max_length=max_length,
+                                    top_k=round(top_k), max_length=max_length,
                                     num_return_sequences=num_return_sequences,
-                                    repetition_penalty=repetition_penalty,
+                                    repetition_penalty=float(repetition_penalty),
                                     penalty_alpha=0.6, no_repeat_ngram_size=1,
                                     early_stopping=True)
             print("Generation complete!")
@@ -168,17 +164,16 @@ def on_ui_tabs():
                     lines=2, elem_id="promptTxt", label="Start of the prompt")
         with gr.Column():
             with gr.Row():
-                #tooltip_slider = gr.tooltip("This is the tooltip text.")
                 temp_slider = gr.Slider(
                     elem_id="temp_slider", label="Temperature", interactive=True, minimum=0, maximum=1, value=0.9)
                 max_length_slider = gr.Slider(
                     elem_id="max_length_slider", label="Max Length", interactive=True, minimum=1, maximum=200, step=1, value=90)
                 top_k_slider = gr.Slider(
-                    elem_id="top_k_slider", label="Top K", value=8, minimum=1, maximum=20, interactive=True)
+                    elem_id="top_k_slider", label="Top K", value=8, minimum=1, maximum=20, step=1, interactive=True)
         with gr.Column():
             with gr.Row():
                 repetition_penalty_slider = gr.Slider(
-                    elem_id="repetition_penalty_slider", label="Repetition Penalty", value=1.2, minimum=0, maximum=10, interactive=True)
+                    elem_id="repetition_penalty_slider", label="Repetition Penalty", value=1.2, minimum=0.1, maximum=10, interactive=True)
                 num_return_sequences_slider = gr.Slider(
                     elem_id="num_return_sequences_slider", label="How Many To Generate", value=5, minimum=1, maximum=20, interactive=True, step=1)
         with gr.Column():
