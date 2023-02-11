@@ -1,0 +1,12 @@
+[
+    {
+        "Title":"Gustavosta",
+        "Tokenizer":"gpt2",
+        "Model":"Gustavosta/MagicPrompt-Dalle"
+    },
+    {
+        "Title":"FredZhang7",
+        "Tokenizer":"distilgpt2",
+        "Model":"FredZhang7/distilgpt2-stable-diffusion-v2"
+    }
+]
