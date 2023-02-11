@@ -2,7 +2,8 @@
 
 Adds a tab to the webui that allows the user to generate a prompt from a small base prompt. Based on [FredZhang7/distilgpt2-stable-diffusion-v2](https://huggingface.co/FredZhang7/distilgpt2-stable-diffusion-v2) and [Gustavosta/MagicPrompt-Stable-Diffusion](https://huggingface.co/Gustavosta/MagicPrompt-Stable-Diffusion). I did nothing apart from porting it to [AUTOMATIC1111 WebUI](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 
-![screenshot](https://user-images.githubusercontent.com/8998556/212550120-df38601b-6811-4470-9e37-6980fbd94369.png)
+<img width="928" alt="image" src="https://user-images.githubusercontent.com/8998556/218254854-aa59f924-53b1-4514-95bb-20077b7c5aab.png">
+
 
 
 ## Installation
@@ -49,7 +50,7 @@ Useful to get more natural language prompts. Eg: "A cat sitting" -> "A cat sitti
 
 ## Install more models
 
-To install more model to use, ensure that the models are hosted on [huggingface.co](https://huggingface.co) and edit the json file at `.\extensions\stable-diffusion-webui-Prompt_Generator\models.json` with the relevant information. Use the models in the file as an basis
+To install more model to use, ensure that the models are hosted on [huggingface.co](https://huggingface.co) and edit the json file at `.\extensions\stable-diffusion-webui-Prompt_Generator\models.json` with the relevant information. Use the models in the file as an example
 
 You might need to restart the extension/reload the UI if new items are added onto the list
 
