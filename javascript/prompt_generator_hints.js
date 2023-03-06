@@ -1,6 +1,7 @@
-//Basically copied this from AUTOMATIC1111 implementation of the main UI
+//Basically copied and adapted from AUTOMATIC1111 implementation of the main UI
+// mouseover tooltips for various UI elements in the form of "UI element label"="Tooltip text".
 
-titles = {
+prompt_generator_titles = {
     "Temperature": "A higher temperature will produce more diverse results, but with a higher risk of less coherent text",
     "Max Length": "The maximum number of tokens for the output of the model",
     "Top K": "Strategy is to sample from a shortlist of the top K tokens. This approach allows the other high-scoring tokens a chance of being picked.",
@@ -11,16 +12,16 @@ titles = {
 
 onUiUpdate(function(){
 	gradioApp().querySelectorAll('span, button, select, p').forEach(function(span){
-		tooltip = titles[span.textContent];
+		tooltip = prompt_generator_titles[span.textContent];
 
 		if(!tooltip){
-		    tooltip = titles[span.value];
+		    tooltip = prompt_generator_titles[span.value];
 		}
 
 		if(!tooltip){
 			for (const c of span.classList) {
-				if (c in titles) {
-					tooltip = titles[c];
+				if (c in prompt_generator_titles) {
+					tooltip = prompt_generator_titles[c];
 					break;
 				}
 			}
@@ -35,7 +36,7 @@ onUiUpdate(function(){
 	    if (select.onchange != null) return;
 
 	    select.onchange = function(){
-            select.title = titles[select.value] || "";
+            select.title = prompt_generator_titles[select.value] || "";
 	    }
 	})
 })
