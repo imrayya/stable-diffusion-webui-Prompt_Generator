@@ -28,7 +28,7 @@ The initial use of the model may take longer as it needs to be downloaded to you
 - **Repetition Penalty**: The parameter for repetition penalty. 1.0 means no penalty. See [this paper](https://arxiv.org/pdf/1909.05858.pdf) for more details. Default setting is 1.2
 - **How Many To Generate**: The number of results to generate
 - **Use blacklist?**: Using `.\extensions\stable-diffusion-webui-Prompt_Generator\blacklist.txt`. It will delete any matches to the generated result (case insensitive). Each item to be filtered out should be on a new line. *Be aware that it simply deletes it and doesn't generate more to make up for the lost words*
-- **Use puncation**: Allows the use commas in the output
+- **Use punctuation**: Allows the use commas in the output
 
 ## Models
 

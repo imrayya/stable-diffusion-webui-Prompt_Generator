@@ -159,7 +159,7 @@ def on_ui_tabs():
             with gr.Row():
                 populate_models()
                 generate_dropdown = gr.Dropdown(choices=list(models.keys()), value="FredZhang7", label = "Which model to use?",show_label=True)
-                use_puncation_check = gr.Checkbox(label="Use puncation?")
+                use_punctuation_check = gr.Checkbox(label="Use punctuation?")
                 generateButton_fred = gr.Button(
                     value="Generate", elem_id="generate_button")
         with gr.Column(visible=False) as results_col:
@@ -182,7 +182,7 @@ def on_ui_tabs():
         generateButton_fred.click(fn=generate_longer_generic, inputs=[
             promptTxt, temp_slider, top_k_slider, max_length_slider,
             repetition_penalty_slider, num_return_sequences_slider,
-            generate_dropdown,use_puncation_check, use_blacklist_checkbox],
+            generate_dropdown,use_punctuation_check, use_blacklist_checkbox],
             outputs=[results, send_to_img2img, send_to_txt2img, send_to_text,
                      results_col, warning, promptNum_col])
         send_to_img2img.click(add_to_prompt, inputs=[
