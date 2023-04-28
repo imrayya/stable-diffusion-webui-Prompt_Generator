@@ -2,8 +2,9 @@
 
 Adds a tab to the webui that allows the user to generate a prompt from a small base prompt. Based on [FredZhang7/distilgpt2-stable-diffusion-v2](https://huggingface.co/FredZhang7/distilgpt2-stable-diffusion-v2) and [Gustavosta/MagicPrompt-Stable-Diffusion](https://huggingface.co/Gustavosta/MagicPrompt-Stable-Diffusion). I did nothing apart from porting it to [AUTOMATIC1111 WebUI](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 
-<img width="928" alt="image" src="https://user-images.githubusercontent.com/8998556/218254854-aa59f924-53b1-4514-95bb-20077b7c5aab.png">
 
+
+![Screenshot 2023-04-29 000027](https://user-images.githubusercontent.com/8998556/235261664-2c92689d-9915-4543-8d6a-57a8ecd0f484.png)
 
 
 ## Installation
