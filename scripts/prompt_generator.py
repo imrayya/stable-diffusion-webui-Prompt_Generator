@@ -12,16 +12,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 import json
 import re
+import sys
 
 import gradio as gr
 import modules
+from pathlib import Path
 from modules import script_callbacks
+import modules.scripts as scripts
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 
 result_prompt = ""
 models = {}
 max_no_results = 20  # TODO move to setting panel
-
+model_file = Path(scripts.basedir(), "models.json")
 
 class Model:
     '''
@@ -38,7 +41,8 @@ class Model:
 def populate_models():
     """Get the models that this extension can use via models.json
     """
-    path = "./extensions/stable-diffusion-webui-Prompt_Generator/models.json"
+    #TODO add button to refresh and update model list
+    path = model_file
     with open(path, 'r') as f:
         data = json.load(f)
     for item in data:
