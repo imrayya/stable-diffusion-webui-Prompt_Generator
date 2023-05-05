@@ -12,7 +12,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 import json
 import re
-import sys
 
 import gradio as gr
 import modules
@@ -24,7 +23,9 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 result_prompt = ""
 models = {}
 max_no_results = 20  # TODO move to setting panel
-model_file = Path(scripts.basedir(), "models.json")
+base_dir = scripts.basedir()
+model_file = Path(base_dir, "models.json")
+
 
 class Model:
     '''
@@ -41,7 +42,7 @@ class Model:
 def populate_models():
     """Get the models that this extension can use via models.json
     """
-    #TODO add button to refresh and update model list
+    # TODO add button to refresh and update model list
     path = model_file
     with open(path, 'r') as f:
         data = json.load(f)
@@ -171,6 +172,17 @@ def on_ui_tabs():
                 result_list.append("")
         return result_list
 
+    def ui_dynamic_result_batch():
+        return result_prompt
+
+    def save_prompt_to_file(path, append: bool):
+        if len(result_prompt) == 0:
+            print("Prompt is empty")
+            return
+        with open(path, encoding="utf-8", mode="a" if append else "w") as f:
+            f.write(result_prompt)
+        print("Prompt written to: ", path)
+
     # ----------------------------------------------------------------------------
     # UI structure
     txt2img_prompt = modules.ui.txt2img_paste_fields[0][0]
@@ -210,39 +222,53 @@ def on_ui_tabs():
                 generateButton = gr.Button(
                     value="Generate", elem_id="generate_button")  # TODO Add element to show that it is working in the background so users don't think nothing is happening
 
-        # Handles Dynamic results
+        # Handles results
         results_vis = []
         results_txt_list = []
-        with gr.Column() as results_col:
-            for i in range(max_no_results):
-                with gr.Row(visible=False) as row:
-                    row.style(equal_height=True)  # Doesn't seem to do anything
-                    with gr.Column(scale=3):  # Guessing at the scale
-                        textBox = gr.Textbox(label="")
-                    with gr.Column(scale=1):
-                        txt2img = gr.Button("send to txt2img")
-                        img2img = gr.Button("send to img2img")
+        with gr.Tab("Results"):
+            with gr.Column():
+                for i in range(max_no_results):
+                    with gr.Row(visible=False) as row:
+                        # Doesn't seem to do anything
+                        row.style(equal_height=True)
+                        with gr.Column(scale=3):  # Guessing at the scale
+                            textBox = gr.Textbox(label="", lines=3)
+                        with gr.Column(scale=1):
+                            txt2img = gr.Button("send to txt2img")
+                            img2img = gr.Button("send to img2img")
 
-                    # Handles ___2img buttons
-                    txt2img.click(add_to_prompt, inputs=[
-                                  textBox], outputs=[txt2img_prompt]).then(None, _js='switch_to_txt2img',
-                                                                           inputs=None, outputs=None)
-                    img2img.click(add_to_prompt, inputs=[
-                                  textBox], outputs=[img2img_prompt]).then(None, _js='switch_to_img2img',
-                                                                           inputs=None, outputs=None)
-                    results_txt_list.append(textBox)
-                results_vis.append(row)
+                        # Handles ___2img buttons
+                        txt2img.click(add_to_prompt, inputs=[
+                            textBox], outputs=[txt2img_prompt]).then(None, _js='switch_to_txt2img',
+                                                                     inputs=None, outputs=None)
+                        img2img.click(add_to_prompt, inputs=[
+                            textBox], outputs=[img2img_prompt]).then(None, _js='switch_to_img2img',
+                                                                     inputs=None, outputs=None)
+                        results_txt_list.append(textBox)
+                    results_vis.append(row)
+        with gr.Tab("Batch"):
+            with gr.Column():
+                batch_texbox = gr.Textbox("", label="Results")
+                with gr.Row():
+                    with gr.Column(scale=4):
+                        savePathText = gr.Textbox(
+                            Path(base_dir, "batch_prompt.txt"), label="Path", interactive=True)
+                    with gr.Column(scale=1):
+                        appendCheck = gr.Checkbox(label="Append")
+                        saveButton = gr.Button("Save To file")
 
         # ----------------------------------------------------------------------------------
         # Handle buttons
-        #Please note that we use `.then()` to run other ui elements after the generation is done 
+        saveButton.click(fn=save_prompt_to_file, inputs=[
+                         savePathText, appendCheck])
+        # Please note that we use `.then()` to run other ui elements after the generation is done
         generateButton.click(fn=generate_longer_generic, inputs=[
             promptTxt, temp_slider, top_k_slider, max_length_slider,
             repetition_penalty_slider, num_return_sequences_slider,
             generate_dropdown, use_punctuation_check, use_blacklist_checkbox]).then(
             fn=ui_dynamic_result_visible, inputs=num_return_sequences_slider,
             outputs=results_vis).then(
-            fn=ui_dynamic_result_prompts, outputs=results_txt_list)
+            fn=ui_dynamic_result_prompts, outputs=results_txt_list).then(fn=ui_dynamic_result_batch, outputs=batch_texbox)
     return (prompt_generator, "Prompt Generator", "Prompt Generator"),
 
 
