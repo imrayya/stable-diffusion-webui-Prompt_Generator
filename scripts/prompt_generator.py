@@ -74,7 +74,7 @@ def on_ui_tabs():
     def generate_longer_generic(prompt, temperature, top_k,
                                 max_length, repetition_penalty,
                                 num_return_sequences, name, use_punctuation=False,
-                                use_blacklist=False, progress=gr.Progress()):  # TODO make the progress bar work
+                                use_blacklist=False):  # TODO make the progress bar work
         """Generates a longer string from the input
 
         Args:
@@ -99,21 +99,17 @@ def on_ui_tabs():
         Returns:
             Returns only an error otherwise saves it in result_prompt
         """
-        progress(0, "Starting")
         try:
-            progress(0.25)
-            print("Loading Tokenizer")
+            print("[Prompt_Generator]:","Loading Tokenizer")
             tokenizer = GPT2Tokenizer.from_pretrained(models[name].tokenizer)
             tokenizer.add_special_tokens({'pad_token': '[PAD]'})
-            progress(0.5)
-            print("Loading Model")
+            print("[Prompt_Generator]:","Loading Model")
             model = GPT2LMHeadModel.from_pretrained(models[name].model)
         except Exception as e:
-            print(f"Exception encountered while attempting to install tokenizer")
+            print("[Prompt_Generator]:",f"Exception encountered while attempting to install tokenizer")
             return gr.update(), f"Error: {e}"
         try:
-            print(f"Generate new prompt from: \"{prompt}\" with {name}")
-            progress(0.75)
+            print("[Prompt_Generator]:",f"Generate new prompt from: \"{prompt}\" with {name}")
             input_ids = tokenizer(prompt, return_tensors='pt').input_ids
             if (use_punctuation):
                 output = model.generate(input_ids, do_sample=True, temperature=temperature,
@@ -130,8 +126,7 @@ def on_ui_tabs():
                                             repetition_penalty),
                                         penalty_alpha=0.6, no_repeat_ngram_size=1,
                                         early_stopping=True)
-            print("Generation complete!")
-            progress(1, "Done!")
+            print("[Prompt_Generator]:","Generation complete!")
             tempString = ""
             if (use_blacklist):
                 blacklist = get_list_blacklist()
@@ -150,7 +145,7 @@ def on_ui_tabs():
             result_prompt = tempString
             # print(result_prompt)
         except Exception as e:
-            print(
+            print("[Prompt_Generator]:",
                 f"Exception encountered while attempting to generate prompt: {e}")
             return gr.update(), f"Error: {e}"
 
@@ -177,11 +172,11 @@ def on_ui_tabs():
 
     def save_prompt_to_file(path, append: bool):
         if len(result_prompt) == 0:
-            print("Prompt is empty")
+            print("[Prompt_Generator]:","Prompt is empty")
             return
         with open(path, encoding="utf-8", mode="a" if append else "w") as f:
             f.write(result_prompt)
-        print("Prompt written to: ", path)
+        print("[Prompt_Generator]:","Prompt written to: ", path)
 
     # ----------------------------------------------------------------------------
     # UI structure
@@ -189,9 +184,10 @@ def on_ui_tabs():
     img2img_prompt = modules.ui.img2img_paste_fields[0][0]
 
     with gr.Blocks(analytics_enabled=False) as prompt_generator:
+        # Handles UI for prompt creation
         with gr.Column():
             with gr.Row():
-                promptTxt = gr.Textbox(
+                prompt_textbox = gr.Textbox(
                     lines=2, elem_id="promptTxt", label="Start of the prompt")
         with gr.Column():
             gr.HTML(
@@ -199,19 +195,19 @@ def on_ui_tabs():
             with gr.Row():
                 temp_slider = gr.Slider(
                     elem_id="temp_slider", label="Temperature", interactive=True, minimum=0, maximum=1, value=0.9)
-                max_length_slider = gr.Slider(
+                maxLength_slider = gr.Slider(
                     elem_id="max_length_slider", label="Max Length", interactive=True, minimum=1, maximum=200, step=1, value=90)
-                top_k_slider = gr.Slider(
+                topK_slider = gr.Slider(
                     elem_id="top_k_slider", label="Top K", value=8, minimum=1, maximum=20, step=1, interactive=True)
         with gr.Column():
             with gr.Row():
-                repetition_penalty_slider = gr.Slider(
+                repetitionPenalty_slider = gr.Slider(
                     elem_id="repetition_penalty_slider", label="Repetition Penalty", value=1.2, minimum=0.1, maximum=10, interactive=True)
-                num_return_sequences_slider = gr.Slider(
+                numReturnSequences_slider = gr.Slider(
                     elem_id="num_return_sequences_slider", label="How Many To Generate", value=5, minimum=1, maximum=max_no_results, interactive=True, step=1)
         with gr.Column():
             with gr.Row():
-                use_blacklist_checkbox = gr.Checkbox(label="Use blacklist?")
+                useBlacklist_checkbox = gr.Checkbox(label="Use blacklist?")
                 gr.HTML(value="<center>Using <code>\".\extensions\stable-diffusion-webui-Prompt_Generator\\blacklist.txt</code>\".<br>It will delete any matches to the generated result (case insensitive).</center>")
         with gr.Column():
             with gr.Row():
@@ -219,10 +215,10 @@ def on_ui_tabs():
                 generate_dropdown = gr.Dropdown(choices=list(models.keys()), value=list(models.keys())[
                                                 1 if len(models) > 0 else 0], label="Which model to use?", show_label=True)  # TODO Add default to setting page
                 use_punctuation_check = gr.Checkbox(label="Use punctuation?")
-                generateButton = gr.Button(
+                generate_button = gr.Button(
                     value="Generate", elem_id="generate_button")  # TODO Add element to show that it is working in the background so users don't think nothing is happening
 
-        # Handles results
+        # Handles UI for results
         results_vis = []
         results_txt_list = []
         with gr.Tab("Results"):
@@ -236,7 +232,6 @@ def on_ui_tabs():
                         with gr.Column(scale=1):
                             txt2img = gr.Button("send to txt2img")
                             img2img = gr.Button("send to img2img")
-
                         # Handles ___2img buttons
                         txt2img.click(add_to_prompt, inputs=[
                             textBox], outputs=[txt2img_prompt]).then(None, _js='switch_to_txt2img',
@@ -254,19 +249,19 @@ def on_ui_tabs():
                         savePathText = gr.Textbox(
                             Path(base_dir, "batch_prompt.txt"), label="Path", interactive=True)
                     with gr.Column(scale=1):
-                        appendCheck = gr.Checkbox(label="Append")
-                        saveButton = gr.Button("Save To file")
+                        append_checkBox = gr.Checkbox(label="Append")
+                        save_button = gr.Button("Save To file")
 
         # ----------------------------------------------------------------------------------
         # Handle buttons
-        saveButton.click(fn=save_prompt_to_file, inputs=[
-                         savePathText, appendCheck])
+        save_button.click(fn=save_prompt_to_file, inputs=[
+            savePathText, append_checkBox])
         # Please note that we use `.then()` to run other ui elements after the generation is done
-        generateButton.click(fn=generate_longer_generic, inputs=[
-            promptTxt, temp_slider, top_k_slider, max_length_slider,
-            repetition_penalty_slider, num_return_sequences_slider,
-            generate_dropdown, use_punctuation_check, use_blacklist_checkbox]).then(
-            fn=ui_dynamic_result_visible, inputs=num_return_sequences_slider,
+        generate_button.click(fn=generate_longer_generic, inputs=[
+            prompt_textbox, temp_slider, topK_slider, maxLength_slider,
+            repetitionPenalty_slider, numReturnSequences_slider,
+            generate_dropdown, use_punctuation_check, useBlacklist_checkbox]).then(
+            fn=ui_dynamic_result_visible, inputs=numReturnSequences_slider,
             outputs=results_vis).then(
             fn=ui_dynamic_result_prompts, outputs=results_txt_list).then(fn=ui_dynamic_result_batch, outputs=batch_texbox)
     return (prompt_generator, "Prompt Generator", "Prompt Generator"),
