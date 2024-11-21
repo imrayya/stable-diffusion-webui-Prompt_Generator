@@ -225,8 +225,6 @@ def on_ui_tabs():
             with gr.Column():
                 for i in range(max_no_results):
                     with gr.Row(visible=False) as row:
-                        # Doesn't seem to do anything
-                        row.style(equal_height=True)
                         with gr.Column(scale=3):  # Guessing at the scale
                             textBox = gr.Textbox(label="", lines=3)
                         with gr.Column(scale=1):
