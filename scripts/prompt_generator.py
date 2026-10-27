@@ -58,8 +58,9 @@ def add_to_prompt(prompt):  # A holder TODO figure out how to get rid of it
 
 
 def get_list_blacklist():
-    # Set the directory you want to start from
-    file_path = './extensions/stable-diffusion-webui-Prompt_Generator/blacklist.txt'
+    # Resolve relative to this extension's directory, not the CWD,
+    # so it works regardless of the directory name (issue #28)
+    file_path = Path(base_dir, "blacklist.txt")
     things_to_black_list = []
     with open(file_path, 'r') as f:
         # Read each line in the file and append it to the list
@@ -208,7 +209,7 @@ def on_ui_tabs():
         with gr.Column():
             with gr.Row():
                 useBlacklist_checkbox = gr.Checkbox(label="Use blacklist?")
-                gr.HTML(value="<center>Using <code>\".\extensions\stable-diffusion-webui-Prompt_Generator\\blacklist.txt</code>\".<br>It will delete any matches to the generated result (case insensitive).</center>")
+                gr.HTML(value=f"<center>Using <code>\"{Path(base_dir, 'blacklist.txt').as_posix()}\"</code>.<br>It will delete any matches to the generated result (case insensitive).</center>")
         with gr.Column():
             with gr.Row():
                 populate_models()
